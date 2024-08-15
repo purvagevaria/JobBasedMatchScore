@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Job Match</title>
+</head>
+<body>
+    <h1>Resume Job Match</h1>
+    <form id="uploadForm" action="/analyze" method="post" enctype="multipart/form-data">
+        <label for="resume">Upload Resume (PDF):</label>
+        <input type="file" id="resume" name="resume" accept="application/pdf" required>
+        <br><br>
+        <label for="jobDesc">Job Description:</label>
+        <textarea id="jobDesc" name="jobDesc" rows="4" cols="50" required></textarea>
+        <br><br>
+        <input type="submit" value="Analyze">
+    </form>
+    <div id="results">
+        <h2>Analysis Results</h2>
+        <p id="matchScore">Match Score: </p>
+        <p id="suggestions">Suggestions: </p>
+    </div>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('matchScore').innerText = 'Match Score: ' + data.matchScore.toFixed(2) + '%';
+                document.getElementById('suggestions').innerText = 'Suggestions: ' + (data.suggestions.length > 0 ? data.suggestions.join(', ') : 'None');
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
