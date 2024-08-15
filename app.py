@@ -1,59 +1,28 @@
-from flask import Flask, render_template, request, jsonify
-from werkzeug.utils import secure_filename
-import os
-from PyPDF2 import PdfReader  # Updated import
+import gradio as gr
+import PyPDF2
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-app = Flask(__name__)
-
-# Set up upload folder
-UPLOAD_FOLDER = 'uploads/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-def extract_text_from_pdf(pdf_path):
-    with open(pdf_path, 'rb') as file:
-        pdf_reader = PdfReader(file)  # Updated to PdfReader
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text()
+# Function to extract text from a PDF file
+def extract_text_from_pdf(pdf_file):
+    text = ""
+    with open(pdf_file.name, 'rb') as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        for page_num in range(len(pdf_reader.pages)):
+            text += pdf_reader.pages[page_num].extract_text()
     return text
 
-def calculate_similarity(resume_text, job_desc_text):
-    documents = [resume_text, job_desc_text]
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
-    similarity_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-    return similarity_score[0][0]
+# Function to calculate similarity using TF-IDF vectors
+def calculate_tfidf_similarity(resume_text, job_desc_text):
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([resume_text, job_desc_text])
+    similarity_score = cosine_similarity(vectors[0:1], vectors[1:2]).flatten()[0]
+    return similarity_score
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    if 'resume' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-    
-    file = request.files['resume']
-    job_desc = request.form['jobDesc']
-
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
-
-    # Extract text from the uploaded resume PDF
-    resume_text = extract_text_from_pdf(file_path)
-    
-    # Calculate similarity score
-    match_score = calculate_similarity(resume_text, job_desc)
-
-    # Generate suggestions (simplified for demonstration)
+# Function to analyze resume and job description
+def analyze_resume_and_job_desc(resume_file, job_desc_text):
+    resume_text = extract_text_from_pdf(resume_file)
+    match_score = calculate_tfidf_similarity(resume_text, job_desc_text)
     suggestions = []
     if match_score < 0.7:
         suggestions = [
@@ -61,8 +30,19 @@ def analyze():
             "Add specific experiences that match the job description.",
             "Use keywords from the job description."
         ]
+    return {'matchScore': match_score * 100, 'suggestions': suggestions}
 
-    return jsonify({'matchScore': match_score * 100, 'suggestions': suggestions})
+# Define Gradio interface
+iface = gr.Interface(
+    fn=analyze_resume_and_job_desc,
+    inputs=[
+        gr.File(label="Upload Resume (PDF)"),
+        gr.Textbox(lines=10, placeholder="Paste job description here...", label="Job Description")
+    ],
+    outputs=[
+        gr.JSON(label="Results")
+    ],
+    live=True
+)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+iface.launch()
