@@ -40,6 +40,10 @@ pip install pymupdf
 - Analyze: Click the "Analyze" button to process the resume and job description.
 - View Results: Check the match score and recommendations. The pie chart provides a visual representation of the match score.
 
+# Block diagram
+<img src="https://github.com/user-attachments/assets/e3f8dca0-daa6-436f-bddb-e7840881dadc" alt="drawing" style="width:200px;"/>
+
+
 # Notes
 - Ensure that the resume is in PDF format and properly formatted for optimal text extraction.
 - The tool provides both fuzzy and rule-based recommendations to help you improve your resume based on the job description.
