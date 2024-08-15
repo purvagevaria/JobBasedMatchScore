@@ -35,7 +35,10 @@ def generate_recommendations(score):
         recommendations.append("Add specific experiences that match the job description.")
     else:
         recommendations.append("Your resume is well-aligned with the job description.")
-    return recommendations
+    
+    # Convert recommendations to bullet points
+    recommendations_text = "\n".join([f"• {rec}" for rec in recommendations])
+    return recommendations_text
 
 # Function to generate a pie chart
 def generate_chart(score):
@@ -75,30 +78,74 @@ def analyze(resume_file, job_description):
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(css="""
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap');
+
         #analyze-button {
-            background-color: #4CAF50;  /* Green background */
+            background: linear-gradient(45deg, #FF6347, #FFD700);  /* Gradient background */
             color: white;               /* White text */
-            border-radius: 5px;         /* Rounded corners */
-            font-size: 14px;            /* Smaller font size */
+            border-radius: 8px;         /* Rounded corners */
+            font-size: 14px;            /* Font size */
             padding: 8px 16px;          /* Padding around the text */
             border: none;               /* Remove border */
+            width: 120px;               /* Set button width */
+            height: 40px;               /* Set button height */
+            font-family: 'Roboto', sans-serif; /* Font family */
         }
         #analyze-button:hover {
-            background-color: #45a049;  /* Darker green on hover */
+            background: linear-gradient(45deg, #FF4500, #FFA500);  /* Darker gradient on hover */
         }
         .gradio-container {
-            font-family: Arial, sans-serif; /* Custom font */
+            font-family: 'Open Sans', sans-serif; /* Custom font */
+            background-color: #f9f9f9;      /* Light background */
+            padding: 20px;                  /* Padding around the container */
+            border-radius: 10px;            /* Rounded container corners */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        #job-description {
+            height: 150px;                 /* Set height */
+            overflow-y: auto;              /* Enable vertical scrolling */
+            padding: 10px;                 /* Add some padding */
+            border-radius: 5px;            /* Rounded corners */
+            border: 1px solid #ccc;        /* Light grey border */
+            background-color: #FFF8DC;     /* Light color background for contrast */
+        }
+        .output-box {
+            background-color: #fff;        /* White background */
+            padding: 10px;                 /* Padding */
+            border-radius: 5px;            /* Rounded corners */
+            border: 1px solid #ccc;        /* Light grey border */
+            font-size: 14px;               /* Font size */
+            margin-top: 10px;              /* Space between elements */
+            font-family: 'Roboto', sans-serif; /* Font family */
+        }
+        .output-box h2 {
+            color: #FF6347;                /* Title color */
+            font-weight: bold;             /* Bold title */
+        }
+        #recommendations-output {
+            font-family: 'Open Sans', sans-serif; /* Custom font */
+            font-size: 16px;               /* Larger font size */
+            color: #333333;                /* Darker text color */
+            line-height: 1.6;              /* Increased line spacing for readability */
+        }
+        #chart-container {
+            background-color: #E0FFFF;     /* Light background for chart */
+            border-radius: 8px;            /* Rounded corners */
+            padding: 15px;                 /* Padding */
+            margin-top: 20px;              /* Space above the chart */
         }
     """) as demo:
-        gr.Markdown("# Job Matching System")
+        gr.Markdown("# 🎨 Job Matching Dashboard")
         with gr.Row():
-            resume_input = gr.File(label="Upload Resume (PDF)", type="binary")
-            job_description_input = gr.Textbox(label="Paste Job Description Text", lines=10)
+            resume_input = gr.File(label="📄 Upload Resume (PDF)", type="binary")
+            job_description_input = gr.Textbox(label="📝 Paste Job Description Text", lines=10, elem_id="job-description")
         with gr.Row():
             submit_button = gr.Button("Analyze", elem_id="analyze-button")
-            output = gr.Textbox(label="Match Score")
-            recommendations_output = gr.Textbox(label="Recommendations")
-            chart_output = gr.Image(type="pil", label="Match Score Chart")
+        with gr.Row():
+            output = gr.Textbox(label="Match Score", elem_classes="output-box")
+            recommendations_output = gr.Textbox(label="Recommendations", elem_classes="output-box", elem_id="recommendations-output")
+        with gr.Row():
+            chart_output = gr.Image(type="pil", label="Match Score Chart", elem_id="chart-container")
         
         submit_button.click(analyze, inputs=[resume_input, job_description_input], outputs=[output, recommendations_output, chart_output])
     
