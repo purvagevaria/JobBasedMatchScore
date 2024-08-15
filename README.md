@@ -45,5 +45,15 @@ pip install pymupdf
 - The tool provides both fuzzy and rule-based recommendations to help you improve your resume based on the job description.
 - The pie chart visualization helps in understanding the match score in a graphical format.
 
+  ## Version History
+
+| Version | Description                                       |
+|---------|---------------------------------------------------|
+| v1.0.0  | Initial release of a JavaScript-based application. |
+| v1.0.1  | - Integrated Gradio for enhanced user interaction.<br>- Implemented a rule-based recommendation system. |
+| v1.0.2  | - Added fuzzy logic implementation alongside rule-based recommendations. |
+
+
 # Demo Video
 <video src='https://github.com/user-attachments/assets/78553915-355e-4959-a7ad-65efef385aaf' width="100" height="auto" controls />
+
