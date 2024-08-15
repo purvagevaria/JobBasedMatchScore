@@ -44,13 +44,13 @@ def generate_recommendations(score):
 def generate_chart(score):
     labels = ['Match Score', 'Remaining']
     sizes = [score, 100 - score]
-    colors = ['#4CAF50', '#FFC107']
+    colors = ['#FFA500', '#FFFFFF']  # Orange and white for the pie chart
     
     fig, ax = plt.subplots()
     wedges, texts, autotexts = ax.pie(sizes, labels=labels, colors=colors,
                                       autopct='%1.1f%%', startangle=90, 
                                       textprops=dict(color="black", fontsize=12),
-                                      wedgeprops=dict(width=0.3))
+                                      wedgeprops=dict(width=0.3, edgecolor='black'))  # Black borders
     ax.set_title('Match Score', fontsize=16, fontweight='bold', color='black')
     
     # Add a legend
@@ -66,6 +66,7 @@ def generate_chart(score):
     # Convert to PIL Image
     buf_image = Image.open(buf)
     return buf_image
+
 
 # Function to handle Gradio interface
 def analyze(resume_file, job_description):
@@ -102,9 +103,9 @@ def gradio_interface():
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
         }
         #job-description {
-            height: 150px;                 /* Set height */
+            height: 120px;                 /* Shortened height */
             overflow-y: auto;              /* Enable vertical scrolling */
-            padding: 10px;                 /* Add some padding */
+            padding: 8px;                  /* Reduced padding */
             border-radius: 5px;            /* Rounded corners */
             border: 1px solid #ccc;        /* Light grey border */
             background-color: #FFF8DC;     /* Light color background for contrast */
@@ -137,8 +138,8 @@ def gradio_interface():
     """) as demo:
         gr.Markdown("# 🎨 Job Matching Dashboard")
         with gr.Row():
-            resume_input = gr.File(label="📄 Upload Resume (PDF)", type="binary")
-            job_description_input = gr.Textbox(label="📝 Paste Job Description Text", lines=10, elem_id="job-description")
+            resume_input = gr.File(label="📄 Upload Resume (PDF)", type="binary", elem_id="resume-input")
+            job_description_input = gr.Textbox(label="📝 Paste Job Description Text", lines=8, elem_id="job-description")
         with gr.Row():
             submit_button = gr.Button("Analyze", elem_id="analyze-button")
         with gr.Row():
@@ -150,6 +151,7 @@ def gradio_interface():
         submit_button.click(analyze, inputs=[resume_input, job_description_input], outputs=[output, recommendations_output, chart_output])
     
     return demo
+
 
 if __name__ == "__main__":
     gradio_interface().launch(share=True)
