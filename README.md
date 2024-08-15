@@ -53,10 +53,6 @@ pip install pymupdf
 | v1.0.1  | - Integrated Gradio for enhanced user interaction.<br>- Implemented a rule-based recommendation system. |
 | v1.0.2  | - Added fuzzy logic implementation alongside rule-based recommendations. |
 
-=======
-- Flask
-- PyPDF2
-- scikit-learn
 
 ## Demo Video
 <video src='https://github.com/user-attachments/assets/78553915-355e-4959-a7ad-65efef385aaf' width="100" height="auto" controls />
