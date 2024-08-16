@@ -20,6 +20,11 @@ The project requires the following Python packages:
 - `Pillow`: For image processing.
 - `PyMuPDF`: For extracting text from PDF files.
 
+# Run flask application
+Run your flask application by following
+![image](https://github.com/user-attachments/assets/474c138a-b835-4f47-8b5a-f28fa61d868c)
+
+
 ## Installation
 
 You can install the required dependencies using pip:
@@ -38,6 +43,10 @@ pip install pymupdf
 - Enter Job Description: Paste the job description into the text area.
 - Analyze: Click the "Analyze" button to process the resume and job description.
 - View Results: Check the match score and recommendations. The pie chart provides a visual representation of the match score.
+
+# Block diagram
+<img src="https://github.com/user-attachments/assets/e3f8dca0-daa6-436f-bddb-e7840881dadc" alt="drawing" style="width:200px;"/>
+
 
 # Notes
 - Ensure that the resume is in PDF format and properly formatted for optimal text extraction.
