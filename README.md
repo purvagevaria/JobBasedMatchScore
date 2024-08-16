@@ -4,7 +4,6 @@ This project is a web-based application designed to help users evaluate how well
 
 ## Features
 
-- **Upload Resume:** Upload a resume in PDF format.
 - **Job Description Input:** Enter a job description to compare with the resume.
 - **Match Score:** Get a similarity score indicating how well your resume matches the job description using both fuzzy matching and rule-based methods.
 - **Recommendations:** Receive actionable suggestions based on the job description to improve your resume.
