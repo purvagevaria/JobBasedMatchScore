@@ -21,6 +21,11 @@ The project requires the following Python packages:
 - `Pillow`: For image processing.
 - `PyMuPDF`: For extracting text from PDF files.
 
+# Run flask application
+Run your flask application by following
+![image](https://github.com/user-attachments/assets/474c138a-b835-4f47-8b5a-f28fa61d868c)
+
+
 ## Installation
 
 You can install the required dependencies using pip:
