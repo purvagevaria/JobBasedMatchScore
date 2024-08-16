@@ -4,15 +4,30 @@ import matplotlib.pyplot as plt
 import io
 from PIL import Image
 from fuzzywuzzy import fuzz
-import fitz  # PyMuPDF
+import fitz  
+import re
+import nltk
+from nltk.corpus import stopwords
 
-# Function to extract text from PDF
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
+
+# Function to clean and tokenize text
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r'\W', ' ', text)  # Remove blank spaces from characters
+    words = text.split()
+    words = [word for word in words if word not in stop_words]  # Remove stopwords
+    return words
+
+# Extract text from PDF
 def extract_text_from_pdf(pdf_file):
-    # Open the PDF file
-    pdf_document = fitz.open(stream=pdf_file, filetype='pdf')
-    text = ""
+    if isinstance(pdf_file, bytes):
+        pdf_document = fitz.open(stream=pdf_file, filetype='pdf')
+    else:
+        pdf_document = fitz.open(pdf_file.name)
     
-    # Iterate through each page
+    text = ""
     for page_num in range(len(pdf_document)):
         page = pdf_document.load_page(page_num)
         text += page.get_text()
@@ -20,33 +35,38 @@ def extract_text_from_pdf(pdf_file):
     pdf_document.close()
     return text
 
-# Function to compute fuzzy match score
+# Calculate fuzzy match score
 def compute_fuzzy_match_score(resume_text, job_description):
-    fuzzy_score = fuzz.ratio(resume_text, job_description)  # Fuzzy matching score
-    return fuzzy_score
+    resume_words = clean_text(resume_text)
+    jd_words = clean_text(job_description)
+    
+    common_words = set(resume_words) & set(jd_words)
+    match_count = len(common_words)
+    fuzzy_score = fuzz.token_sort_ratio(" ".join(resume_words), " ".join(jd_words))
+    
+    return fuzzy_score, match_count
 
 # Function to generate recommendations based on fuzzy match score
 def generate_fuzzy_recommendations(score):
     recommendations = []
-    if score < 50:
+    if score < 60:
         recommendations.append("Consider using more relevant keywords.")
         recommendations.append("Fix typos and variations in your resume.")
+    elif score < 80:
+        recommendations.append("Your resume is fairly aligned, but some key skills or experiences might be missing.")
     else:
         recommendations.append("Your resume is well-aligned with the job description.")
     
     recommendations_text = "\n".join([f"• {rec}" for rec in recommendations])
     return recommendations_text
 
-# Function to generate a pie chart for fuzzy match score
+# Generate a pie chart for fuzzy match score
 def generate_chart(fuzzy_score):
     fuzzy_score = min(max(fuzzy_score, 0), 100)
     
     labels = ['Fuzzy Match Score', 'Other']
     sizes = [fuzzy_score, 100 - fuzzy_score]
     colors = ['#FFA500', '#E0E0E0']
-    
-    if len(labels) != len(sizes):
-        raise ValueError("Labels and sizes must be of the same length")
     
     fig, ax = plt.subplots()
     wedges, texts, autotexts = ax.pie(sizes, labels=labels, colors=colors,
@@ -66,19 +86,18 @@ def generate_chart(fuzzy_score):
     buf_image = Image.open(buf)
     return buf_image
 
-# Function to handle Gradio interface
+# Creating Gradio interface
 def analyze(resume_file, job_description):
     resume_text = extract_text_from_pdf(resume_file)
-    fuzzy_score = compute_fuzzy_match_score(resume_text, job_description)
+    fuzzy_score, match_count = compute_fuzzy_match_score(resume_text, job_description)
     fuzzy_recommendations = generate_fuzzy_recommendations(fuzzy_score)
     chart_image = generate_chart(fuzzy_score)
+    
     return f"Fuzzy Match Score: {fuzzy_score:.2f}%", fuzzy_recommendations, chart_image
 
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(css="""
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap');
-
         #analyze-button {
             background: linear-gradient(45deg, #FF6347, #FFD700);
             color: white;
@@ -88,68 +107,43 @@ def gradio_interface():
             border: none;
             width: 120px;
             height: 40px;
-            font-family: 'Roboto', sans-serif;
         }
         #analyze-button:hover {
             background: linear-gradient(45deg, #FF4500, #FFA500);
         }
         .gradio-container {
-            font-family: 'Open Sans', sans-serif;
             background-color: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
         }
-        #job-description {
-            height: 120px;
-            overflow-y: auto;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #FFF8DC;
-        }
-        .output-box {
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            margin-top: 10px;
-            font-family: 'Roboto', sans-serif;
-        }
-        .output-box h2 {
-            color: #FF6347;
-            font-weight: bold;
-        }
-        #recommendations-output {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 16px;
-            color: #333333;
-            line-height: 1.6;
-        }
-        #chart-container {
-            background-color: #E0FFFF;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
+        .gradio-output {
+            font-family: sans-serif;
         }
     """) as demo:
-        gr.Markdown("# 🎨 Job Matching Dashboard")
-        with gr.Row():
-            resume_input = gr.File(label="📄 Upload Resume (PDF)", type="binary", elem_id="resume-input")
-            job_description_input = gr.Textbox(label="📝 Paste Job Description Text", lines=8, elem_id="job-description")
-        with gr.Row():
-            submit_button = gr.Button("Analyze", elem_id="analyze-button")
-        with gr.Row():
-            output = gr.Textbox(label="Fuzzy Match Score", elem_classes="output-box")
-            recommendations_output = gr.Textbox(label="Recommendations", elem_classes="output-box", elem_id="recommendations-output")
-        with gr.Row():
-            chart_output = gr.Image(type="pil", label="Match Score Chart", elem_id="chart-container")
+        gr.Markdown("## Resume and Job Description Analyzer")
         
-        submit_button.click(analyze, inputs=[resume_input, job_description_input], outputs=[output, recommendations_output, chart_output])
+        with gr.Row():
+            resume_input = gr.File(label="Upload Resume (PDF)")
+        
+        with gr.Row():
+            job_description_input = gr.Textbox(label="Enter Job Description", lines=10)
+        
+        with gr.Row():
+            analyze_button = gr.Button("Analyze", elem_id="analyze-button")
+        
+        fuzzy_score_output = gr.Textbox(label="Fuzzy Match Score", elem_classes="gradio-output")
+        recommendations_output = gr.Textbox(label="Recommendations", elem_classes="gradio-output")
+        chart_output = gr.Image(label="Fuzzy Match Score Chart")
+        
+        analyze_button.click(
+            fn=analyze, 
+            inputs=[resume_input, job_description_input], 
+            outputs=[fuzzy_score_output, recommendations_output, chart_output]
+        )
     
-    return demo
+    demo.launch()
 
-
+# Launch Gradio interface
 if __name__ == "__main__":
-    gradio_interface().launch(share=True)
+    gradio_interface()

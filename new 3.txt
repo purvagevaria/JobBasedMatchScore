@@ -1,0 +1,122 @@
+
+Job Title: Data Scientist
+
+
+
+About Us:
+At TCS, we are committed to leveraging data to drive innovation and deliver exceptional solutions. We are seeking a skilled Data Scientist to join our dynamic team and contribute to our mission of transforming data into actionable insights that propel our business forward.
+
+Job Summary:
+As a Data Scientist at [Company Name], you will be responsible for analyzing complex datasets, building predictive models, and providing actionable insights to support data-driven decision-making. You will work closely with cross-functional teams to understand business requirements, develop data-driven solutions, and communicate findings effectively.
+
+OBJECTIVE
+Sept 2011 - June 2015
+Gujrat Technological University, Ahmedabad - India
+An enthusiastic and dedicated data scientist student seeking for an internship position to gain hands-on
+experience in Data Science, Business Analyst, Software Development. Eager to contribute my skills in a
+real-world setting and learn from industry professionals.
+
+
+EDUCATION
+Data Analysis for Business Decision Making - 4.5 CPGA May 2023 - Dec 2023
+Durham College of Applied Arts and Technology, Oshawa - ON
+OBJECTIVE
+Sept 2011 - June 2015
+Gujrat Technological University, Ahmedabad - India
+An enthusiastic and dedicated data scientist student seeking for an internship position to gain hands-on
+experience in Data Science, Business Analyst, Software Development. Eager to contribute my skills in a
+real-world setting and learn from industry professionals.
+Bachelors of Information Technology - 8.0 CGPA
+Artificial Intelligence Analysis, Design and Implementation - Pursuing
+Durham College of Applied Arts and Technology, Oshawa - ON
+
+PROJECTS
+Fish Species Analysis Project:
+Description : Developed and deployed a machine learning model using Flask to predict fish
+species based on physical measurements.
+Details : Trained the model with the Fish Market dataset and deployed the application on Render.
+GitHub : https://github.com/purvagevaria/Fish-Species-Analysis
+SKILLS
+Programming Languages:
+Python : Proficient in scripting, automation, and data manipulation.
+R : Experienced in statistical analysis and data visualization.
+Data Analysis:
+Pandas, NumPy : Expertise in data cleaning, transformation, and numerical computations.
+
+Statistical Analysis:
+Regression : Skilled in linear and logistic regression models.
+Hypothesis Testing : Proficient in conducting and interpreting statistical tests.
+Data Visualization:
+Tableau : Skilled in creating interactive dashboards and data stories.
+Power BI : Experienced in building insightful and interactive business reports.
+MS Excel : Advanced skills in data analysis, pivot tables, and charting.
+Database Technologies:
+SQL : Proficient in writing complex queries for data retrieval and manipulation.
+Version Control:
+Git : Experienced in version control and collaboration using Git.
+SVN, Bitbucke : Familiar with SVN and Bitbucket for source code management
+
+Software:
+Jupyter, Anaconda : Proficient in using Jupyter notebooks and Anaconda for data science projects.
+VS Code : Experienced in using Visual Studio Code for coding and debugging.
+Other Technology Stack:
+Kotlin, Java : Developed and maintained Android applications.
+Android, Flutter, React Native : Experienced in mobile application development for various platforms.
+XML, Excel : Skilled in using XML for data interchange and Excel for data analysis.
+
+OBJECTIVE
+Sept 2011 - June 2015
+Gujrat Technological University, Ahmedabad - India
+An enthusiastic and dedicated data scientist student seeking for an internship position to gain hands-on
+experience in Data Science, Business Analyst, Software Development. Eager to contribute my skills in a
+real-world setting and learn from industry professionals.
+
+
+EDUCATION
+Data Analysis for Business Decision Making - 4.5 CPGA May 2023 - Dec 2023
+Durham College of Applied Arts and Technology, Oshawa - ON
+OBJECTIVE
+Sept 2011 - June 2015
+Gujrat Technological University, Ahmedabad - India
+An enthusiastic and dedicated data scientist student seeking for an internship position to gain hands-on
+experience in Data Science, Business Analyst, Software Development. Eager to contribute my skills in a
+real-world setting and learn from industry professionals.
+Bachelors of Information Technology - 8.0 CGPA
+Artificial Intelligence Analysis, Design and Implementation - Pursuing
+Durham College of Applied Arts and Technology, Oshawa - ON
+
+PROJECTS
+Fish Species Analysis Project:
+Description : Developed and deployed a machine learning model using Flask to predict fish
+species based on physical measurements.
+Details : Trained the model with the Fish Market dataset and deployed the application on Render.
+GitHub : https://github.com/purvagevaria/Fish-Species-Analysis
+SKILLS
+Programming Languages:
+Python : Proficient in scripting, automation, and data manipulation.
+R : Experienced in statistical analysis and data visualization.
+Data Analysis:
+Pandas, NumPy : Expertise in data cleaning, transformation, and numerical computations.
+
+Statistical Analysis:
+Regression : Skilled in linear and logistic regression models.
+Hypothesis Testing : Proficient in conducting and interpreting statistical tests.
+Data Visualization:
+Tableau : Skilled in creating interactive dashboards and data stories.
+Power BI : Experienced in building insightful and interactive business reports.
+MS Excel : Advanced skills in data analysis, pivot tables, and charting.
+Database Technologies:
+SQL : Proficient in writing complex queries for data retrieval and manipulation.
+Version Control:
+Git : Experienced in version control and collaboration using Git.
+SVN, Bitbucke : Familiar with SVN and Bitbucket for source code management
+
+Software:
+Jupyter, Anaconda : Proficient in using Jupyter notebooks and Anaconda for data science projects.
+VS Code : Experienced in using Visual Studio Code for coding and debugging.
+Other Technology Stack:
+Kotlin, Java : Developed and maintained Android applications.
+Android, Flutter, React Native : Experienced in mobile application development for various platforms.
+XML, Excel : Skilled in using XML for data interchange and Excel for data analysis.
+
+
