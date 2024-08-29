@@ -3,22 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 from PIL import Image
-from fuzzywuzzy import fuzz
 import fitz  
 import re
 import nltk
 from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import os
 
+# Download NLTK stopwords
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 
 # Function to clean and tokenize text
 def clean_text(text):
     text = text.lower()
-    text = re.sub(r'\W', ' ', text)  # Remove blank spaces from characters
+    text = re.sub(r'\W', ' ', text)  # Remove non-alphanumeric characters
     words = text.split()
     words = [word for word in words if word not in stop_words]  # Remove stopwords
-    return words
+    return ' '.join(words)
 
 # Extract text from PDF
 def extract_text_from_pdf(pdf_file):
@@ -35,19 +38,21 @@ def extract_text_from_pdf(pdf_file):
     pdf_document.close()
     return text
 
-# Calculate fuzzy match score
-def compute_fuzzy_match_score(resume_text, job_description):
-    resume_words = clean_text(resume_text)
-    jd_words = clean_text(job_description)
+# Calculate match score using TF-IDF and Cosine Similarity
+def compute_match_score(resume_text, job_description):
+    resume_text_cleaned = clean_text(resume_text)
+    jd_text_cleaned = clean_text(job_description)
     
-    common_words = set(resume_words) & set(jd_words)
-    match_count = len(common_words)
-    fuzzy_score = fuzz.token_sort_ratio(" ".join(resume_words), " ".join(jd_words))
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([resume_text_cleaned, jd_text_cleaned])
     
-    return fuzzy_score, match_count
+    cosine_sim = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
+    match_score = cosine_sim * 100  # Convert to percentage
+    
+    return match_score
 
-# Function to generate recommendations based on fuzzy match score
-def generate_fuzzy_recommendations(score):
+# Function to generate recommendations based on match score
+def generate_recommendations(score):
     recommendations = []
     if score < 60:
         recommendations.append("Consider using more relevant keywords.")
@@ -60,12 +65,12 @@ def generate_fuzzy_recommendations(score):
     recommendations_text = "\n".join([f"• {rec}" for rec in recommendations])
     return recommendations_text
 
-# Generate a pie chart for fuzzy match score
-def generate_chart(fuzzy_score):
-    fuzzy_score = min(max(fuzzy_score, 0), 100)
+# Generate a pie chart for match score
+def generate_chart(score):
+    score = min(max(score, 0), 100)
     
-    labels = ['Fuzzy Match Score', 'Other']
-    sizes = [fuzzy_score, 100 - fuzzy_score]
+    labels = ['Match Score', 'Other']
+    sizes = [score, 100 - score]
     colors = ['#FFA500', '#E0E0E0']
     
     fig, ax = plt.subplots()
@@ -73,7 +78,7 @@ def generate_chart(fuzzy_score):
                                       autopct='%1.1f%%', startangle=90, 
                                       textprops=dict(color="black", fontsize=12),
                                       wedgeprops=dict(width=0.3, edgecolor='black'))
-    ax.set_title('Fuzzy Match Score', fontsize=16, fontweight='bold', color='black')
+    ax.set_title('Match Score', fontsize=16, fontweight='bold', color='black')
     
     ax.legend(wedges, labels, title="Score Breakdown",
               loc="center left", bbox_to_anchor=(1, 0, 0.5, 1),
@@ -89,11 +94,11 @@ def generate_chart(fuzzy_score):
 # Creating Gradio interface
 def analyze(resume_file, job_description):
     resume_text = extract_text_from_pdf(resume_file)
-    fuzzy_score, match_count = compute_fuzzy_match_score(resume_text, job_description)
-    fuzzy_recommendations = generate_fuzzy_recommendations(fuzzy_score)
-    chart_image = generate_chart(fuzzy_score)
+    match_score = compute_match_score(resume_text, job_description)
+    recommendations = generate_recommendations(match_score)
+    chart_image = generate_chart(match_score)
     
-    return f"Fuzzy Match Score: {fuzzy_score:.2f}%", fuzzy_recommendations, chart_image
+    return f"Match Score: {match_score:.2f}%", recommendations, chart_image
 
 # Gradio interface
 def gradio_interface():
@@ -132,21 +137,19 @@ def gradio_interface():
         with gr.Row():
             analyze_button = gr.Button("Analyze", elem_id="analyze-button")
         
-        fuzzy_score_output = gr.Textbox(label="Fuzzy Match Score", elem_classes="gradio-output")
+        match_score_output = gr.Textbox(label="Match Score", elem_classes="gradio-output")
         recommendations_output = gr.Textbox(label="Recommendations", elem_classes="gradio-output")
-        chart_output = gr.Image(label="Fuzzy Match Score Chart")
+        chart_output = gr.Image(label="Match Score Chart")
         
         analyze_button.click(
             fn=analyze, 
             inputs=[resume_input, job_description_input], 
-            outputs=[fuzzy_score_output, recommendations_output, chart_output]
+            outputs=[match_score_output, recommendations_output, chart_output]
         )
     
-    demo.launch()
+    port = int(os.getenv("PORT", 8080))
+    demo.launch(server_name="0.0.0.0", server_port=port)
 
 # Launch Gradio interface
 if __name__ == "__main__":
-    gradio_interface() 
-
-    
-    
+    gradio_interface()
