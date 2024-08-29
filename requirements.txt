@@ -2,3 +2,10 @@ Flask
 joblib
 scikit-learn
 gradio
+numpy
+matplotlib
+Pillow
+fuzzywuzzy
+python-Levenshtein
+PyMuPDF
+nltk
