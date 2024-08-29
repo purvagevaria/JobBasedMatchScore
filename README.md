@@ -24,6 +24,8 @@ The project requires the following Python packages:
 Run your flask application by following
 ![image](https://github.com/user-attachments/assets/474c138a-b835-4f47-8b5a-f28fa61d868c)
 
+## Live Demo
+You can access the live application [here](https://jobbasedmatchscore.onrender.com/).
 
 ## Installation
 
