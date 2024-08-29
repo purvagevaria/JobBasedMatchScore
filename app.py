@@ -146,7 +146,7 @@ def gradio_interface():
 
 # Launch Gradio interface
 if __name__ == "__main__":
-   gradio_interface.launch(server_name="0.0.0.0", server_port=8080)
+    gradio_interface() 
 
     
     
